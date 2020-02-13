@@ -1,0 +1,36 @@
+==================================================================================================================
+Coman Diana Stefania
+323CA
+==================================================================================================================
+
+client.cpp:
+	- am retinut variabilele conectat si numar_card pentru a sti daca clientul este logat sau care client este logat
+	- mai intai setez logfile-ul
+	- apoi deschid conexiunile tcp si udp catre server
+	- dupa folosesc apelul de select ca in laborator pentru a alege intre stdin si socketul tcp
+	- toate comenzile primite de la stdin se duc la functia parse_command care in functie de comanda primita de stdin 
+	apeleaza functia care se ocupa de acea comanda (ex: do_login, do_logout, etc.)
+
+server.cpp:
+	- am creat structura ibank_client in care imi salvez date pentru fiecare cient 
+	struct ibank_client{
+		string nume;
+		string prenume;
+		int numar_card;
+		int pin;
+		string parola_secreta;
+		double sold;
+		bool conectat = false;
+		bool blocat = false;
+		int incercari = 0;
+	    int sock_tcp = -1;
+	};
+	- am retinut toti posibilii clienti intr-un unordered_map<numar_card(int), ibank_client> folosind functia get_clients
+	- am deschis conexiunile tcp si udp
+	- am folosit apelul de select ca in laborator
+	- de cate ori primesc o noua conexiune pe socketul tcp, adaug un nou socket 
+	- daca primesc mesaje pe socketul udp apelez do_unlock unde tratez cazurile posibile pentru unlock
+	- pentru mesajele primite pe ceilalti socketi apelez parse_tcp_command care in functie de mesajul primit 
+	apeleaza functia care se ocupa de acea comanda (ex: do_login, do_logout, etc.)
+	- cand se primeste comanda quit de la stdin se trimite mesaj de quit tuturor clientilor; atat clientii cat si 
+	serverul se inchid
